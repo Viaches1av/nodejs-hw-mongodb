@@ -4,7 +4,7 @@
   "main": "index.js",
   "scripts": {
     "lint": "eslint src/**/*.js",
-    "start": "node ./src/index.js",
+    "start": "node src/index.js",
     "dev": "node src/index.js"
   },
   "keywords": [],
