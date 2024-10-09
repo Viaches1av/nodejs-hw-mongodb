@@ -6,12 +6,12 @@ export default [
       sourceType: 'module',
     },
     rules: {
-      'no-console': 'off', // Отключение ошибок для использования console.log()
-      'strict': 'off', // Отключение режима строгого использования
+      'no-console': 'off',
+      'strict': 'off',
     },
     env: {
-      node: true, // Указание, что это среда Node.js
-      es2021: true, // Современная версия ECMAScript
+      node: true,
+      es2021: true,
     },
   },
 ];
