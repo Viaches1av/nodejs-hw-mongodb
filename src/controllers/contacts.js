@@ -16,16 +16,13 @@ const getAllContacts = async (req, res, next) => {
 
 const getContactById = async (req, res, next) => {
   try {
-    const { contactId } = req.params;
-    const contact = await Contact.findById(contactId);
-
+    const contact = await Contact.findById(req.params.contactId);
     if (!contact) {
-      throw createError(404, `Contact with id ${contactId} not found`);
+      return next(createError(404, `Contact with id ${req.params.contactId} not found`));
     }
-
     res.status(200).json({
       status: 200,
-      message: `Successfully found contact with id ${contactId}`,
+      message: `Successfully found contact with id ${req.params.contactId}`,
       data: contact,
     });
   } catch (error) {
