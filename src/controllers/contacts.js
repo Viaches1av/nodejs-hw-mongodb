@@ -36,7 +36,7 @@ const getAllContacts = async (req, res, next) => {
       status: 200,
       message: 'Successfully found contacts!',
       data: {
-        contacts,
+        data: contacts,
         page: pageNumber,
         perPage: perPageNumber,
         totalItems,
