@@ -3,12 +3,17 @@ const router = express.Router();
 const contactsController = require('../controllers/contacts');
 const validateBody = require('../middlewares/validateBody');
 const isValidId = require('../middlewares/isValidId');
+const authenticate = require('../middlewares/authenticate');
 const {
   contactPostSchema,
   contactPatchSchema,
 } = require('../schemas/contactSchema');
 
+// Применяем authenticate для всех маршрутов
+router.use(authenticate);
+
 router.get('/', contactsController.getAllContacts);
+
 router.get('/:contactId', isValidId, contactsController.getContactById);
 
 router.post(

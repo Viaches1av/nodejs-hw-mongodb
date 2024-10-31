@@ -24,9 +24,21 @@ const contactSchema = new Schema(
       enum: ['work', 'home', 'personal'],
       default: 'personal',
     },
+    userId: {
+      // Связь с пользователем
+      type: Schema.Types.ObjectId,
+      ref: 'User',
+      required: true,
+    },
+    parentId: {
+      // Связь с родителем, если нужно
+      type: Schema.Types.ObjectId,
+      ref: 'User',
+    },
   },
   {
     timestamps: true,
+    versionKey: false,
   }
 );
 
