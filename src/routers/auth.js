@@ -1,15 +1,25 @@
 const express = require('express');
 const validateBody = require('../middlewares/validateBody');
-const { userSchema, loginSchema, refreshTokenSchema }= require('../schemas/userSchema');
+const authenticate = require('../middlewares/authenticate');
+const {
+  userSchema,
+  loginSchema,
+  refreshTokenSchema,
+} = require('../schemas/userSchema');
 const authController = require('../controllers/authController');
 
 const router = express.Router();
 
+// Регистрация
 router.post('/register', validateBody(userSchema), authController.register);
 
+// Логин
 router.post('/login', validateBody(loginSchema), authController.login);
 
-router.post('/refresh', validateBody(refreshTokenSchema), authController.refresh);
+// Обновление сессии с использованием refresh токена
+router.post('/refresh', authController.refresh);
 
+// Выход из системы
+router.post('/logout', authenticate, authController.logout);
 
 module.exports = router;

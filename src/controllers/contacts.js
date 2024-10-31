@@ -19,18 +19,19 @@ const getAllContacts = async (req, res, next) => {
       pageNumber <= 0 ||
       perPageNumber <= 0
     ) {
-      return next(BadRequest('Invalid pagination parameters'));
+      return next(createError(400, 'Invalid pagination parameters'));
     }
 
     const sortOptions = { [sortBy]: sortOrder === 'asc' ? 1 : -1 };
-
     const skip = (pageNumber - 1) * perPageNumber;
-    const contacts = await Contact.find()
+
+    // Находим контакты только текущего пользователя
+    const contacts = await Contact.find({ userId: req.user._id })
       .skip(skip)
       .limit(perPageNumber)
       .sort(sortOptions);
 
-    const totalItems = await Contact.countDocuments();
+    const totalItems = await Contact.countDocuments({ userId: req.user._id });
 
     res.status(200).json({
       status: 200,
@@ -50,13 +51,13 @@ const getAllContacts = async (req, res, next) => {
   }
 };
 
-module.exports = {
-  getAllContacts,
-};
-
 const getContactById = async (req, res, next) => {
   try {
-    const contact = await Contact.findById(req.params.contactId);
+    // Находим контакт по ID и userId текущего пользователя
+    const contact = await Contact.findOne({
+      _id: req.params.contactId,
+      userId: req.user._id,
+    });
     if (!contact) {
       return next(
         createError(404, `Contact with id ${req.params.contactId} not found`)
@@ -81,12 +82,15 @@ const createContact = async (req, res, next) => {
       isFavourite = false,
       contactType,
     } = req.body;
+
+    // Добавляем userId текущего пользователя к новому контакту
     const newContact = await Contact.create({
       name,
       phoneNumber,
       email,
       isFavourite,
       contactType,
+      userId: req.user._id,
     });
 
     res.status(201).json({
@@ -102,12 +106,12 @@ const createContact = async (req, res, next) => {
 const updateContact = async (req, res, next) => {
   try {
     const { contactId } = req.params;
-    const updatedContact = await Contact.findByIdAndUpdate(
-      contactId,
+
+    // Обновляем контакт по ID и userId
+    const updatedContact = await Contact.findOneAndUpdate(
+      { _id: contactId, userId: req.user._id },
       req.body,
-      {
-        new: true,
-      }
+      { new: true }
     );
 
     if (!updatedContact) {
@@ -127,7 +131,12 @@ const updateContact = async (req, res, next) => {
 const deleteContact = async (req, res, next) => {
   try {
     const { contactId } = req.params;
-    const deletedContact = await Contact.findByIdAndDelete(contactId);
+
+    // Удаляем контакт по ID и userId
+    const deletedContact = await Contact.findOneAndDelete({
+      _id: contactId,
+      userId: req.user._id,
+    });
 
     if (!deletedContact) {
       throw createError(404, `Contact with id ${contactId} not found`);

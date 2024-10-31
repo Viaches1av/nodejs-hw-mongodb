@@ -1,4 +1,5 @@
 const express = require('express');
+const cookieParser = require('cookie-parser');
 const cors = require('cors');
 const pino = require('pino-http')();
 const contactsRouter = require('./routers/contacts');
@@ -11,6 +12,7 @@ function setupServer() {
 
   app.use(cors());
   app.use(express.json());
+  app.use(cookieParser());
   app.use(pino);
 
   app.use('/auth', authRouter);
