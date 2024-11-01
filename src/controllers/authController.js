@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const User = require('../models/userModel');
 const Session = require('../models/sessionModel');
-const createError = require('http-errors');
+const createHttpError = require('http-errors');
 
 // Регистрация нового пользователя
 const register = async (req, res, next) => {
@@ -12,7 +12,7 @@ const register = async (req, res, next) => {
     // Проверяем, существует ли уже пользователь с такой почтой
     const existingUser = await User.findOne({ email });
     if (existingUser) {
-      throw createError(409, 'Email in use');
+      throw createHttpError(409, 'Email in use');
     }
 
     // Хэшируем пароль
@@ -48,12 +48,12 @@ const login = async (req, res, next) => {
     // Проверка пользователя
     const user = await User.findOne({ email });
     if (!user) {
-      throw createError(401, 'Invalid email or password');
+      throw createHttpError(401, 'Invalid email or password');
     }
 
     const passwordMatch = await bcrypt.compare(password, user.password);
     if (!passwordMatch) {
-      throw createError(401, 'Invalid email or password');
+      throw createHttpError(401, 'Invalid email or password');
     }
 
     // Генерация токенов
@@ -101,19 +101,19 @@ const refresh = async (req, res, next) => {
     const { refreshToken } = req.cookies;
 
     if (!refreshToken) {
-      throw createError(400, 'Refresh token is required');
+      throw createHttpError(400, 'Refresh token is required');
     }
 
     // Поиск сессии по refresh-токену
     const session = await Session.findOne({ refreshToken });
     if (!session) {
-      throw createError(401, 'Invalid refresh token');
+      throw createHttpError(401, 'Invalid refresh token');
     }
 
     // Проверка срока действия refresh-токена
     if (new Date() > session.refreshTokenValidUntil) {
       await Session.findByIdAndDelete(session._id); // Удаляем истекшую сессию
-      throw createError(401, 'Refresh token expired');
+      throw createHttpError(401, 'Refresh token expired');
     }
 
     // Генерация новой пары токенов
@@ -161,7 +161,7 @@ const logout = async (req, res, next) => {
     const { sessionId, refreshToken } = req.cookies;
 
     if (!sessionId || !refreshToken) {
-      throw createError(400, 'Session ID and refresh token are required');
+      throw createHttpError(400, 'Session ID and refresh token are required');
     }
 
     // Удаление сессии из базы данных
@@ -170,7 +170,7 @@ const logout = async (req, res, next) => {
       refreshToken,
     });
     if (!session) {
-      throw createError(404, 'Session not found');
+      throw createHttpError(404, 'Session not found');
     }
 
     res.clearCookie('sessionId');
