@@ -20,6 +20,6 @@ router.post('/login', validateBody(loginSchema), authController.login);
 router.post('/refresh', authController.refresh);
 
 // Выход из системы
-router.post('/logout', authenticate, authController.logout);
+router.post('/logout', authController.logout);
 
 module.exports = router;

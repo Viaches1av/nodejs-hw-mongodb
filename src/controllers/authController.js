@@ -158,23 +158,27 @@ const refresh = async (req, res, next) => {
 // Логаут пользователя
 const logout = async (req, res, next) => {
   try {
-    const { sessionId, refreshToken } = req.cookies;
+    // Извлекаем refreshToken из куки
+    const refreshToken = req.cookies.refreshToken;
 
-    if (!sessionId || !refreshToken) {
-      throw createHttpError(400, 'Session ID and refresh token are required');
+    // Проверяем наличие refreshToken
+    if (!refreshToken) {
+      return next(createError(400, 'Refresh token is required'));
     }
 
-    // Удаление сессии из базы данных
-    const session = await Session.findOneAndDelete({
-      _id: sessionId,
-      refreshToken,
-    });
+    // Удаляем сессию на основе refresh-токена
+    const session = await Session.findOneAndDelete({ refreshToken });
+
+    // Проверяем, была ли найдена и удалена сессия
     if (!session) {
-      throw createHttpError(404, 'Session not found');
+      return next(createError(404, 'Session not found'));
     }
 
-    res.clearCookie('sessionId');
+    // Очищаем куки сессии
     res.clearCookie('refreshToken');
+    res.clearCookie('sessionId');
+
+    // Отправляем успешный ответ
     res.status(204).send(); // Успешный логаут без тела ответа
   } catch (error) {
     next(error);
