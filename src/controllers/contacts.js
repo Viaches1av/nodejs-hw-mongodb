@@ -1,5 +1,6 @@
 const Contact = require('../models/contactModel');
 const createError = require('http-errors');
+const { saveFileToCloudinary } = require('../utils/saveFileToCloudinary');
 
 const getAllContacts = async (req, res, next) => {
   try {
@@ -75,21 +76,22 @@ const getContactById = async (req, res, next) => {
 
 const createContact = async (req, res, next) => {
   try {
-    const {
-      name,
-      phoneNumber,
-      email,
-      isFavourite = false,
-      contactType,
-    } = req.body;
+    const { name, phoneNumber, email, isFavourite = false, contactType } = req.body;
+    let photoUrl;
 
-    // Добавляем userId текущего пользователя к новому контакту
+    // Проверка наличия файла и загрузка на Cloudinary
+    if (req.file) {
+      photoUrl = await saveFileToCloudinary(req.file);
+    }
+
+    // Создаем новый контакт с добавлением userId и photoUrl
     const newContact = await Contact.create({
       name,
       phoneNumber,
       email,
       isFavourite,
       contactType,
+      photo: photoUrl,
       userId: req.user._id,
     });
 
@@ -106,11 +108,17 @@ const createContact = async (req, res, next) => {
 const updateContact = async (req, res, next) => {
   try {
     const { contactId } = req.params;
+    let photoUrl;
 
-    // Обновляем контакт по ID и userId
+    // Проверка наличия файла и загрузка на Cloudinary
+    if (req.file) {
+      photoUrl = await saveFileToCloudinary(req.file);
+    }
+
+    // Обновляем контакт по ID, userId и photoUrl
     const updatedContact = await Contact.findOneAndUpdate(
       { _id: contactId, userId: req.user._id },
-      req.body,
+      { ...req.body, photo: photoUrl || req.body.photo },
       { new: true }
     );
 

@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken');
+const nodemailer = require('nodemailer');
 const bcrypt = require('bcrypt');
 const User = require('../models/userModel');
 const Session = require('../models/sessionModel');
@@ -185,4 +186,87 @@ const logout = async (req, res, next) => {
   }
 };
 
-module.exports = { register, login, refresh, logout };
+// Отправка email для сброса пароля
+const sendResetEmail = async (req, res, next) => {
+  try {
+    const { email } = req.body;
+
+    // Проверка наличия пользователя
+    const user = await User.findOne({ email });
+    if (!user) {
+      throw createHttpError(404, 'User not found!');
+    }
+
+    // Создание JWT токена для сброса пароля
+    const token = jwt.sign({ email: user.email }, process.env.JWT_SECRET, {
+      expiresIn: '5m',
+    });
+
+    // Настройка Nodemailer
+    const transporter = nodemailer.createTransport({
+      host: process.env.SMTP_HOST,
+      port: process.env.SMTP_PORT,
+      auth: {
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASSWORD,
+      },
+    });
+
+    // Формирование и отправка письма
+    const resetLink = `${process.env.APP_DOMAIN}/reset-password?token=${token}`;
+    const mailOptions = {
+      from: process.env.SMTP_FROM,
+      to: email,
+      subject: 'Password Reset',
+      html: `<p>Click <a href="${resetLink}">here</a> to reset your password.</p>`,
+    };
+
+    await transporter.sendMail(mailOptions);
+
+    res.status(200).json({
+      status: 200,
+      message: 'Reset email has been successfully sent.',
+      data: {},
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// Сброс пароля
+const resetPassword = async (req, res, next) => {
+  try {
+    const { token, password } = req.body;
+
+    // Проверка токена
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+    // Поиск пользователя
+    const user = await User.findOne({ email: decoded.email });
+    if (!user) {
+      throw createHttpError(404, 'User not found!');
+    }
+
+    // Хэширование нового пароля
+    const hashedPassword = await bcrypt.hash(password, 10);
+    user.password = hashedPassword;
+    await user.save();
+
+    // Удаление текущей сессии
+    await Session.deleteOne({ userId: user._id });
+
+    res.status(200).json({
+      status: 200,
+      message: 'Password has been successfully reset.',
+      data: {},
+    });
+  } catch (error) {
+    if (error.name === 'TokenExpiredError' || error.name === 'JsonWebTokenError') {
+      next(createHttpError(401, 'Token is expired or invalid.'));
+    } else {
+      next(error);
+    }
+  }
+};
+
+module.exports = { register, login, refresh, logout, sendResetEmail, resetPassword };

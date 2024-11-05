@@ -1,9 +1,11 @@
 const express = require('express');
-const router = express.Router();
 const contactsController = require('../controllers/contacts');
 const validateBody = require('../middlewares/validateBody');
 const isValidId = require('../middlewares/isValidId');
+const contactSchema = require('../schemas/contactSchema');
 const authenticate = require('../middlewares/authenticate');
+const upload = require('../middlewares/multer');
+const router = express.Router();
 const {
   contactPostSchema,
   contactPatchSchema,
@@ -30,5 +32,20 @@ router.patch(
 );
 
 router.delete('/:contactId', isValidId, contactsController.deleteContact);
+
+router.post(
+  '/',
+  upload.single('photo'),
+  validateBody(contactSchema),
+  contactsController.createContact
+);
+
+router.patch(
+  '/:contactId',
+  isValidId,
+  upload.single('photo'),
+  validateBody(contactSchema),
+  contactsController.updateContact
+);
 
 module.exports = router;
