@@ -6,6 +6,7 @@ const contactPostSchema = Joi.object({
   email: Joi.string().email().optional(),
   isFavourite: Joi.boolean().optional(),
   contactType: Joi.string().optional(),
+  photo: Joi.string().optional(),
 });
 
 const contactPatchSchema = Joi.object({
@@ -14,6 +15,7 @@ const contactPatchSchema = Joi.object({
   email: Joi.string().email().optional(),
   isFavourite: Joi.boolean().optional(),
   contactType: Joi.string().optional(),
+  photo: Joi.string().optional(),
 });
 
 module.exports = { contactPostSchema, contactPatchSchema };

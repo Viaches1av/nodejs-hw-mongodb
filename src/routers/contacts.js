@@ -35,16 +35,46 @@ router.delete('/:contactId', isValidId, contactsController.deleteContact);
 
 router.post(
   '/',
+  authenticate,
   upload.single('photo'),
-  validateBody(contactSchema),
+  (req, res, next) => {
+    console.log('req.body:', req.body);
+    console.log('req.file:', req.file);
+    next();
+  },
+  (req, res, next) => {
+    req.body = {
+      ...req.body,
+      isFavourite: req.body.isFavourite === 'true',
+    };
+    ю;
+    const { error } = contactPostSchema.validate(req.body);
+    if (error) {
+      return res.status(400).json({
+        status: 400,
+        message: error.details[0].message,
+        data: null,
+      });
+    }
+
+    next();
+  },
   contactsController.createContact
 );
 
 router.patch(
   '/:contactId',
+  authenticate,
   isValidId,
   upload.single('photo'),
-  validateBody(contactSchema),
+  (req, res, next) => {
+    req.body = {
+      ...req.body,
+      isFavourite: req.body.isFavourite === 'true',
+    };
+    next();
+  },
+  validateBody(contactPatchSchema),
   contactsController.updateContact
 );
 
