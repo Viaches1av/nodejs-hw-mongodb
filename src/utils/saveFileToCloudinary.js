@@ -1,8 +1,6 @@
 const cloudinary = require('cloudinary').v2;
 const fs = require('fs/promises');
-const path = require('path');
 
-// Настройки Cloudinary (инициализация с использованием переменных среды)
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
@@ -11,18 +9,19 @@ cloudinary.config({
 
 const saveFileToCloudinary = async (file) => {
   try {
-    // Загружаем файл на Cloudinary
+    console.log('Начинаем загрузку файла на Cloudinary');
+    console.log('Путь к файлу:', file.path);
     const result = await cloudinary.uploader.upload(file.path, {
-      folder: process.env.CLOUDINARY_FOLDER, // Папка, в которую будет загружен файл
+      folder: process.env.CLOUDINARY_FOLDER,
     });
+    console.log('Загрузка на Cloudinary завершена. Результат:', result);
 
-    // Удаляем временный файл после загрузки
     await fs.unlink(file.path);
-
-    return result.secure_url; // Возвращаем безопасный URL загруженного файла
+    return result.secure_url;
   } catch (error) {
+    console.error('Ошибка при загрузке на Cloudinary:', error.message);
     throw new Error('Failed to upload file to Cloudinary');
   }
 };
 
-module.exports = { saveFileToCloudinary };
+module.exports = saveFileToCloudinary;

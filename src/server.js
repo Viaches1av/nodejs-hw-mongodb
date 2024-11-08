@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const cookieParser = require('cookie-parser');
 const cors = require('cors');
@@ -6,7 +7,6 @@ const contactsRouter = require('./routers/contacts');
 const authRouter = require('./routers/auth');
 const errorHandler = require('./middlewares/errorHandler');
 const notFoundHandler = require('./middlewares/notFoundHandler');
-require('dotenv').config();
 
 function setupServer() {
   const app = express();
