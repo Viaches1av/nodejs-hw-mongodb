@@ -26,7 +26,6 @@ const getAllContacts = async (req, res, next) => {
     const sortOptions = { [sortBy]: sortOrder === 'asc' ? 1 : -1 };
     const skip = (pageNumber - 1) * perPageNumber;
 
-    // Находим контакты только текущего пользователя
     const contacts = await Contact.find({ userId: req.user._id })
       .skip(skip)
       .limit(perPageNumber)
@@ -54,7 +53,6 @@ const getAllContacts = async (req, res, next) => {
 
 const getContactById = async (req, res, next) => {
   try {
-    // Находим контакт по ID и userId текущего пользователя
     const contact = await Contact.findOne({
       _id: req.params.contactId,
       userId: req.user._id,
@@ -76,15 +74,16 @@ const getContactById = async (req, res, next) => {
 
 const createContact = async (req, res, next) => {
   try {
-    const { name, phoneNumber, email, isFavourite = false, contactType } = req.body;
-    let photoUrl;
-
-    // Проверка наличия файла и загрузка на Cloudinary
-    if (req.file) {
-      photoUrl = await saveFileToCloudinary(req.file);
+    if (!req.body) {
+      throw new Error(
+        'Пустое тело запроса. Убедитесь, что данные переданы корректно.'
+      );
     }
+    const { name, phoneNumber, email, isFavourite, contactType } = req.body;
 
-    // Создаем новый контакт с добавлением userId и photoUrl
+    const photoUrl = req.fileUrl || 'default_url';
+
+    // Создаем новый контакт
     const newContact = await Contact.create({
       name,
       phoneNumber,
@@ -97,10 +96,11 @@ const createContact = async (req, res, next) => {
 
     res.status(201).json({
       status: 201,
-      message: 'Contact created!',
+      message: 'Контакт успешно создан!',
       data: newContact,
     });
   } catch (error) {
+    console.error('Ошибка при создании контакта:', error.message);
     next(error);
   }
 };
@@ -140,7 +140,6 @@ const deleteContact = async (req, res, next) => {
   try {
     const { contactId } = req.params;
 
-    // Удаляем контакт по ID и userId
     const deletedContact = await Contact.findOneAndDelete({
       _id: contactId,
       userId: req.user._id,
