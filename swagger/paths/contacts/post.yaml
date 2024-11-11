@@ -1,0 +1,52 @@
+tags:
+  - Contacts
+summary: Create a new contact
+operationId: createContact
+description: Create a new contact with the provided details.
+security:
+  - bearerAuth: []
+requestBody:
+  required: true
+  content:
+    application/json:
+      schema:
+        type: object
+        required:
+          - name
+          - email
+          - phone
+        properties:
+          name:
+            type: string
+            example: 'Jane Doe'
+            description: The name of the contact.
+          email:
+            type: string
+            example: 'janedoe@example.com'
+            description: The email address of the contact.
+          phone:
+            type: string
+            example: '+1234567890'
+            description: The phone number of the contact.
+          favorite:
+            type: boolean
+            example: false
+            description: Marks if the contact is a favorite.
+responses:
+  '201':
+    description: Successfully created a contact.
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            status:
+              type: integer
+              example: 201
+            message:
+              type: string
+              example: 'Contact created successfully!'
+            data:
+              $ref: '../../components/schemas/contact.yaml'
+  '401':
+    $ref: '../../components/responses/401.yaml'

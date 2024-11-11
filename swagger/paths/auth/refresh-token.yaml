@@ -1,0 +1,26 @@
+tags:
+  - Auth
+summary: Refresh access token
+operationId: refreshToken
+description: Obtain a new access token using a refresh token.
+security:
+  - bearerAuth: []
+responses:
+  '200':
+    description: Successfully refreshed access token.
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            status:
+              type: integer
+              example: 200
+            message:
+              type: string
+              example: 'Token refreshed successfully!'
+            accessToken:
+              type: string
+              example: 'new.jwt.token.here'
+  '401':
+    $ref: '../../components/responses/401.yaml'

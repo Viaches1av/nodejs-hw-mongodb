@@ -5,6 +5,7 @@ const cors = require('cors');
 const pino = require('pino-http')();
 const contactsRouter = require('./routers/contacts');
 const authRouter = require('./routers/auth');
+const { swaggerDocs } = require('./middlewares/swaggerDocs.js');
 const errorHandler = require('./middlewares/errorHandler');
 const notFoundHandler = require('./middlewares/notFoundHandler');
 
@@ -21,6 +22,8 @@ function setupServer() {
 
   app.use(notFoundHandler);
   app.use(errorHandler);
+
+  app.use('/api-docs', swaggerDocs());
 
   return app;
 }

@@ -1,0 +1,27 @@
+type: object
+required:
+  - _id
+  - name
+  - email
+  - phone
+properties:
+  _id:
+    type: string
+    example: '5f8d0d55b54764421b7156c5'
+    description: Unique identifier for the contact.
+  name:
+    type: string
+    example: 'John Doe'
+    description: The name of the contact.
+  email:
+    type: string
+    example: 'johndoe@example.com'
+    description: The email address of the contact.
+  phone:
+    type: string
+    example: '+1234567890'
+    description: The phone number of the contact.
+  favorite:
+    type: boolean
+    example: true
+    description: Marks if the contact is a favorite.
