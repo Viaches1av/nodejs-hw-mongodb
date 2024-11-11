@@ -1,0 +1,131 @@
+openapi: 3.1.0
+info:
+  version: 1.0.0
+  title: Contacts app
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  description: This is a documentation of contacts app
+tags:
+  - name: Contacts
+    description: Operations about contacts.
+  - name: Auth
+    description: Operations about user authentication.
+servers:
+  - url: http://localhost:3000
+  - url: <ссылка на задеплоенный сайт>
+paths:
+  /contacts:
+    get:
+      $ref: ../swagger/paths/contacts/get.yaml
+    post:
+      $ref: ../swagger/paths/contacts/post.yaml
+  /contacts/{contactId}:
+    get:
+      $ref: ../swagger/paths/contacts/{id}/get.yaml
+    patch:
+      $ref: ../swagger/paths/contacts/{id}/patch.yaml
+    delete:
+      $ref: ../swagger/paths/contacts/{id}/delete.yaml
+  /auth/register:
+    post:
+      $ref: ../swagger/paths/auth/register.yaml
+  /auth/login:
+    post:
+      $ref: ../swagger/paths/auth/login.yaml
+  /auth/logout:
+    post:
+      $ref: ../swagger/paths/auth/logout.yaml
+  /auth/refresh-token:
+    post:
+      $ref: ../swagger/paths/auth/refresh-token.yaml
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+  schemas:
+    contact:
+      type: object
+      required:
+        - _id
+        - name
+        - email
+        - phone
+      properties:
+        _id:
+          type: string
+          example: '5f8d0d55b54764421b7156c5'
+          description: Unique identifier for the contact.
+        name:
+          type: string
+          example: 'John Doe'
+          description: The name of the contact.
+        email:
+          type: string
+          example: 'johndoe@example.com'
+          description: The email address of the contact.
+        phone:
+          type: string
+          example: '+1234567890'
+          description: The phone number of the contact.
+        favorite:
+          type: boolean
+          example: true
+          description: Marks if the contact is a favorite.
+    userCredentials:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+          format: email
+          example: 'user@example.com'
+          description: The user's email address.
+        password:
+          type: string
+          example: 'strongpassword123'
+          description: The user's password.
+  responses:
+    400:
+      description: Bad request. Validation error.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: integer
+                example: 400
+              message:
+                type: string
+                example: 'Validation error'
+    401:
+      description: Unauthorized. Access token is missing or invalid.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: integer
+                example: 401
+              message:
+                type: string
+                example: 'Unauthorized access.'
+    404:
+      description: Resource not found.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: integer
+                example: 404
+              message:
+                type: string
+                example: 'Resource not found.'

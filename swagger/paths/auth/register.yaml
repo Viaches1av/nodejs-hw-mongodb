@@ -1,0 +1,44 @@
+tags:
+  - Auth
+summary: Register a new user
+operationId: registerUser
+description: Create a new user account with email and password.
+requestBody:
+  required: true
+  content:
+    application/json:
+      schema:
+        type: object
+        required:
+          - email
+          - password
+        properties:
+          email:
+            type: string
+            format: email
+            example: 'user@example.com'
+            description: The user's email address.
+          password:
+            type: string
+            example: 'strongpassword123'
+            description: The user's password.
+responses:
+  '201':
+    description: User successfully registered.
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            status:
+              type: integer
+              example: 201
+            message:
+              type: string
+              example: 'User registered successfully!'
+  '400':
+    description: Bad request. Validation error or user already exists.
+    content:
+      application/json:
+        schema:
+          $ref: '../../components/responses/400.yaml'
