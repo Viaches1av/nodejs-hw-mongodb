@@ -24,6 +24,7 @@ function setupServer() {
   // Подключение Swagger UI
   app.use('/api-docs', swaggerDocs());
   console.log('Маршрут /api-docs подключен');
+  app.use('/docs', express.static(path.join(__dirname, '..', 'docs')));
 
   // Обработчики ошибок
   app.use(notFoundHandler);
