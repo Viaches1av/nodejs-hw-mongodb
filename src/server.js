@@ -10,6 +10,7 @@ const errorHandler = require('./middlewares/errorHandler');
 const notFoundHandler = require('./middlewares/notFoundHandler');
 
 function setupServer() {
+  console.log('Запуск setupServer'); 
   const app = express();
 
   app.use(cors());
@@ -17,20 +18,22 @@ function setupServer() {
   app.use(cookieParser());
   app.use(pino);
 
+  // Подключаем Swagger UI до всех других обработчиков
+  app.use('/api-docs', swaggerDocs());
+  console.log('Маршрут /api-docs подключен');
+
   app.use('/auth', authRouter);
   app.use('/contacts', contactsRouter);
 
+  // Обработчики ошибок после всех маршрутов
   app.use(notFoundHandler);
   app.use(errorHandler);
 
-  app.use('/api-docs', swaggerDocs());
-
-  console.log('Маршрут /api-docs подключен');
-
-  const PORT = process.env.PORT || 3000; // Используем переменную окружения PORT
+  const PORT = process.env.PORT || 3000;
   app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
   });
+
 
   return app;
 }
