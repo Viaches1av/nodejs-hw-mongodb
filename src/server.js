@@ -3,6 +3,7 @@ const express = require('express');
 const cookieParser = require('cookie-parser');
 const cors = require('cors');
 const pino = require('pino-http')();
+const path = require('path');
 const contactsRouter = require('./routers/contacts');
 const authRouter = require('./routers/auth');
 const { swaggerDocs } = require('./middlewares/swaggerDocs.js');
