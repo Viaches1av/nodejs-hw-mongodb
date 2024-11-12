@@ -16,10 +16,11 @@ router.use(authenticate);
 
 router.get('/', contactsController.getAllContacts);
 router.get('/:contactId', isValidId, contactsController.getContactById);
-
+console.log('Contacts router подключен');
 router.post(
   '/',
   authenticate,
+  console.log('GET запрос на /contacts'),
   upload.single('photo'),
   async (req, res, next) => {
     try {
