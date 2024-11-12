@@ -25,6 +25,13 @@ function setupServer() {
 
   app.use('/api-docs', swaggerDocs());
 
+  console.log('Маршрут /api-docs подключен');
+
+  const PORT = process.env.PORT || 3000; // Используем переменную окружения PORT
+  app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+  });
+
   return app;
 }
 
