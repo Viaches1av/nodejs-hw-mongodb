@@ -23,8 +23,8 @@ function setupServer() {
   app.use('/contacts', contactsRouter);
 
   // Подключение Swagger UI
-  app.use('/api-docs', swaggerDocs());
-  console.log('Маршрут /api-docs подключен');
+  app.use('/', swaggerDocs());
+  console.log('Маршрут / подключен');
   app.use('/docs', express.static(path.join(__dirname, '..', 'docs')));
 
   // Обработчики ошибок
