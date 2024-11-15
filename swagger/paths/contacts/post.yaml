@@ -8,7 +8,7 @@ security:
 requestBody:
   required: true
   content:
-    application/json:
+    multipart/form-data:
       schema:
         type: object
         required:
@@ -18,20 +18,20 @@ requestBody:
         properties:
           name:
             type: string
-            example: 'Jane Doe'
-            description: The name of the contact.
+            description: "The name of the contact."
+            example: "Jane Doe"
           email:
             type: string
-            example: 'janedoe@example.com'
-            description: The email address of the contact.
+            description: "The email address of the contact."
+            example: "janedoe@example.com"
           phone:
             type: string
-            example: '+1234567890'
-            description: The phone number of the contact.
+            description: "The phone number of the contact."
+            example: "+1234567890"
           favorite:
             type: boolean
+            description: "Marks if the contact is a favorite."
             example: false
-            description: Marks if the contact is a favorite.
 responses:
   '201':
     description: Successfully created a contact.

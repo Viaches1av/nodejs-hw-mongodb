@@ -10,20 +10,40 @@ parameters:
     name: page
     schema:
       type: integer
-      example: 1
-    description: Page number for pagination.
+    example: 1
+    description: 'Page number for pagination'
   - in: query
-    name: limit
+    name: perPage
     schema:
       type: integer
-      example: 10
-    description: Limit the number of contacts per page.
+    example: 10
+    description: 'Number of items per page'
   - in: query
-    name: favorite
+    name: sortOrder
+    schema:
+      type: string
+      enum: ['asc', 'desc']
+    example: 'asc'
+    description: 'Sorting order, ascending or descending'
+  - in: query
+    name: sortBy
+    schema:
+      type: string
+    example: 'age'
+    description: 'Field by which to sort the contacts. Default value is _id.'
+  - in: query
+    name: contactType
+    schema:
+      type: string
+      enum: ['work', 'personal', 'home']
+    description: 'Filter by contact type'
+    example: 'personal'
+  - in: query
+    name: isFavourite
     schema:
       type: boolean
-      example: true
-    description: Filter contacts by favorite status.
+    example: false
+    description: 'Filter by favorite status'
 responses:
   '200':
     description: Successfully retrieved list of contacts.
@@ -44,3 +64,5 @@ responses:
                 $ref: '../../components/schemas/contact.yaml'
   '401':
     $ref: '../../components/responses/401.yaml'
+  '404':
+    $ref: '../../components/responses/404.yaml'
