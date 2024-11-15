@@ -13,9 +13,7 @@ tags:
     description: Operations about user authentication.
 servers:
   - url: http://localhost:3000
-    description: Local server
   - url: https://nodejs-hw-mongodb-10yn.onrender.com
-    description: Production server on Render
 
 paths:
   /contacts:
@@ -92,43 +90,3 @@ components:
           type: string
           example: 'strongpassword123'
           description: The user's password.
-  responses:
-    400:
-      description: Bad request. Validation error.
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              status:
-                type: integer
-                example: 400
-              message:
-                type: string
-                example: 'Validation error'
-    401:
-      description: Unauthorized. Access token is missing or invalid.
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              status:
-                type: integer
-                example: 401
-              message:
-                type: string
-                example: 'Unauthorized access.'
-    404:
-      description: Resource not found.
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              status:
-                type: integer
-                example: 404
-              message:
-                type: string
-                example: 'Resource not found.'

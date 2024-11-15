@@ -9,6 +9,4 @@ content:
           example: 401
         message:
           type: string
-          example: 'UnauthorizedError'
-        data:
-          type: null
+          example: "Unauthorized access."
