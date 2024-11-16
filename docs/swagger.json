@@ -184,6 +184,11 @@
                     "type": "boolean",
                     "description": "Marks if the contact is a favorite.",
                     "example": false
+                  },
+                  "photo": {
+                    "type": "string",
+                    "format": "binary",
+                    "description": "Photo of the contact."
                   }
                 }
               }
@@ -331,6 +336,11 @@
                     "type": "boolean",
                     "description": "Marks if the contact is a favorite.",
                     "example": true
+                  },
+                  "photo": {
+                    "type": "string",
+                    "format": "binary",
+                    "description": "Photo of the contact."
                   }
                 }
               }

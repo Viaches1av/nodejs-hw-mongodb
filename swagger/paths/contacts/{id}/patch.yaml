@@ -36,6 +36,10 @@ requestBody:
             type: boolean
             description: "Marks if the contact is a favorite."
             example: true
+          photo:
+            type: string
+            format: binary
+            description: "Photo of the contact."
 responses:
   '200':
     description: Successfully updated contact.
