@@ -28,14 +28,18 @@ requestBody:
             type: string
             description: "The email address of the contact."
             example: "janedoe@example.com"
-          phone:
+          phoneNumber:
             type: string
             description: "The phone number of the contact."
             example: "+1234567890"
-          favorite:
+          isFavourite:
             type: boolean
             description: "Marks if the contact is a favorite."
             example: true
+          contactType:
+            type: string
+            description: "Type of contact (e.g., work, personal, home)."
+            example: "work"
           photo:
             type: string
             format: binary
